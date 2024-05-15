@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Strength Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f3f3f3;
+        }
+
+        .container {
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="password"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #feedback {
+            margin-top: 20px;
+        }
+
+        .password-strength {
+            margin-top: 10px;
+        }
+
+        .weak {
+            color: red;
+        }
+
+        .medium {
+            color: orange;
+        }
+
+        .strong {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Password Strength Tester</h1>
+        <label for="password">Enter your password:</label>
+        <input type="password" id="password" required>
+        <label for="minLength">Minimum length:</label>
+        <input type="number" id="minLength" min="1" value="8">
+        <label for="specialChars">Require special characters:</label>
+        <input type="checkbox" id="specialChars">
+        <button onclick="checkPassword()">Check Password</button>
+        <div id="feedback"></div>
+        <div class="password-strength">
+            <strong>Password Strength:</strong> <span id="passwordStrength"></span>
+        </div>
+    </div>
+
+    <script>
+        function checkPassword() {
+            var password = document.getElementById("password").value;
+            var minLength = document.getElementById("minLength").value;
+            var requireSpecialChars = document.getElementById("specialChars").checked;
+
+            var strength = calculatePasswordStrength(password, minLength, requireSpecialChars);
+
+            var feedbackElement = document.getElementById("feedback");
+            feedbackElement.innerHTML = "";
+            if (strength == "strong") {
+                feedbackElement.innerHTML = "<div style='color: green;'>Password is strong. Good job!</div>";
+            } else if (strength == "medium") {
+                feedbackElement.innerHTML = "<div style='color: orange;'>Password could be stronger. Consider adding more characters or special characters.</div>";
+            } else {
+                feedbackElement.innerHTML = "<div style='color: red;'>Password is weak. Please make it longer and include special characters.</div>";
+            }
+
+            document.getElementById("passwordStrength").textContent = strength.toUpperCase();
+        }
+
+        function calculatePasswordStrength(password, minLength, requireSpecialChars) {
+            var lengthStrength = password.length >= minLength ? 1 : 0;
+            var specialCharStrength = requireSpecialChars ? /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(password) ? 1 : 0 : 1;
+            var totalStrength = lengthStrength + specialCharStrength;
+            if (totalStrength == 2) {
+                return "strong";
+            } else if (totalStrength == 1) {
+                return "medium";
+            } else {
+                return "weak";
+            }
+        }
+      </script>
+</body>
+</html>
