@@ -3,127 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Strength Tester</title>
+    <title>Personalized Password Generator</title>
     <style>
         body {
+            background-color: pink;
+            color: blue;
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f3f3f3;
-        }
-
-        .container {
-            max-width: 400px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
             text-align: center;
-            margin-bottom: 20px;
+            margin-top: 50px;
         }
-
-        label {
-            font-weight: bold;
+        #container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
-        input[type="password"], input[type="number"] {
-            width: 100%;
+        input[type="text"], input[type="number"] {
             padding: 10px;
-            margin-bottom: 10px;
+            margin: 5px;
+            width: calc(100% - 20px);
+            border-radius: 5px;
             border: 1px solid #ccc;
-            border-radius: 4px;
             box-sizing: border-box;
         }
-
-        button {
-            display: block;
-            width: 100%;
-            padding: 10px;
+        input[type="submit"] {
+            padding: 10px 20px;
             margin-top: 10px;
-            background-color: #007bff;
-            color: #fff;
+            background-color: blue;
+            color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
         }
-
-        #feedback {
+        input[type="submit"]:hover {
+            background-color: darkblue;
+        }
+        #password {
+            font-size: 20px;
             margin-top: 20px;
-        }
-
-        .password-strength {
-            margin-top: 10px;
-        }
-
-        .weak {
-            color: red;
-        }
-
-        .medium {
-            color: orange;
-        }
-
-        .strong {
-            color: green;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Password Strength Tester</h1>
-        <label for="password">Enter your password:</label>
-        <input type="password" id="password" required>
-        <label for="minLength">Minimum length:</label>
-        <input type="number" id="minLength" min="1" value="8">
-        <label for="specialChars">Require special characters:</label>
-        <input type="checkbox" id="specialChars">
-        <button onclick="checkPassword()">Check Password</button>
-        <div id="feedback"></div>
-        <div class="password-strength">
-            <strong>Password Strength:</strong> <span id="passwordStrength"></span>
-        </div>
+    <div id="container">
+        <h1>Personalized Password Generator</h1>
+        <form action="">
+            <label for="name">Name:</label><br>
+            <input type="text" id="name" name="name" required><br>
+            <label for="birth_year">Birth Year:</label><br>
+            <input type="number" id="birth_year" name="birth_year" min="1900" max="2024" required><br>
+            <label for="favorite_color">Favorite Color:</label><br>
+            <input type="text" id="favorite_color" name="favorite_color" required><br>
+            <label for="pet_name">Pet Name:</label><br>
+            <input type="text" id="pet_name" name="pet_name" required><br>
+            <label for="lucky_number">Lucky Number:</label><br>
+            <input type="number" id="lucky_number" name="lucky_number" required><br>
+            <label for="favorite_food">Favorite Food:</label><br>
+            <input type="text" id="favorite_food" name="favorite_food" required><br>
+            <label for="favorite_hobby">Favorite Hobby:</label><br>
+            <input type="text" id="favorite_hobby" name="favorite_hobby" required><br>
+            <input type="submit" value="Generate Password">
+        </form>
+        <div id="password"></div>
     </div>
 
     <script>
-        function checkPassword() {
-            var password = document.getElementById("password").value;
-            var minLength = document.getElementById("minLength").value;
-            var requireSpecialChars = document.getElementById("specialChars").checked;
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-            var strength = calculatePasswordStrength(password, minLength, requireSpecialChars);
+            // Retrieve form values
+            var name = document.getElementById('name').value;
+            var birth_year = document.getElementById('birth_year').value;
+            var favorite_color = document.getElementById('favorite_color').value;
+            var pet_name = document.getElementById('pet_name').value;
+            var lucky_number = document.getElementById('lucky_number').value;
+            var favorite_food = document.getElementById('favorite_food').value;
+            var favorite_hobby = document.getElementById('favorite_hobby').value;
 
-            var feedbackElement = document.getElementById("feedback");
-            feedbackElement.innerHTML = "";
-            if (strength == "strong") {
-                feedbackElement.innerHTML = "<div style='color: green;'>Password is strong. Good job!</div>";
-            } else if (strength == "medium") {
-                feedbackElement.innerHTML = "<div style='color: orange;'>Password could be stronger. Consider adding more characters or special characters.</div>";
-            } else {
-                feedbackElement.innerHTML = "<div style='color: red;'>Password is weak. Please make it longer and include special characters.</div>";
-            }
-
-            document.getElementById("passwordStrength").textContent = strength.toUpperCase();
-        }
-
-        function calculatePasswordStrength(password, minLength, requireSpecialChars) {
-            var lengthStrength = password.length >= minLength ? 1 : 0;
-            var specialCharStrength = requireSpecialChars ? /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(password) ? 1 : 0 : 1;
-            var totalStrength = lengthStrength + specialCharStrength;
-            if (totalStrength == 2) {
-                return "strong";
-            } else if (totalStrength == 1) {
-                return "medium";
-            } else {
-                return "weak";
-            }
-        }
-      </script>
+            // AJAX request to Python script for password generation
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:5000/generate_password?name=' + encodeURIComponent(name) +
+                    '&birth_year=' + encodeURIComponent(birth_year) +
+                    '&favorite_color=' + encodeURIComponent(favorite_color) +
+                    '&pet_name=' + encodeURIComponent(pet_name) +
+                    '&lucky_number=' + encodeURIComponent(lucky_number) +
+                    '&favorite_food=' + encodeURIComponent(favorite_food) +
+                    '&favorite_hobby=' + encodeURIComponent(favorite_hobby), true);
+            xhr.onload = function() {
+                if (xhr.status >= 200 && xhr.status < 400) {
+                    // Success!
+                    var password = xhr.responseText;
+                    document.getElementById('password').innerText = "Your personalized password is: " + password;
+                } else {
+                    // We reached our target server, but it returned an error
+                    console.error('Server error!');
+                }
+            };
+            xhr.onerror = function() {
+                // There was a connection error of some sort
+                console.error('Connection error!');
+            };
+            xhr.send();
+        });
+    </script>
 </body>
 </html>
